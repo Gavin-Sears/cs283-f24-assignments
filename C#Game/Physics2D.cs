@@ -10,11 +10,10 @@ public static class Physics2D
 		public float _radius { get; set; }
 		private float _mass { get; set; }
         public Vector2 _position { get; set; }
-        private Vector2 _force { get; set; }
-		private Vector2 _acceleration { get; set; }
+        private Vector2 _constantForce { get; set; }
+		private Vector2 _constantAcceleration { get; set; }
+		private Vector2 _tempAcceleration { get; set; }
 		public Vector2 _velocity { get; set; }
-
-		private float _decay { get; set; }
 
 		public PhysicsSphere(
 			float r,
@@ -22,31 +21,38 @@ public static class Physics2D
 			Vector2 p,
 			Vector2 f,
 			Vector2 a,
-			Vector2 v,
-			float d = 0.0f
+			Vector2 ta,
+			Vector2 v
 			)
 		{
 			this._radius = r;
 			this._mass = m;
 			this._position = p;
-			this._force = f;
-			this._acceleration = a;
+			this._constantForce = f;
+			this._constantAcceleration = a;
+			this._tempAcceleration = ta;
 			this._velocity = v;
-			this._decay = d;
 		}
 
-
-        public void ApplyForce()
+		// Forces that always act on the object (gravity)
+        public void ApplyConstantForce()
 		{
-			this._acceleration = this._force * this._mass;
-			this._force -= this._force * this._decay;
+			this._acceleration = this._constantForce / this._mass;
 		}
 
+		// Temporary force
+		public void ApplyForce(Vector2 force)
+		{
+			this._velocity += force / this._mass;
+		}
+
+		// Using acceleration to update velocity
 		public void ApplyAcceleration(float dt)
 		{
 			this._velocity += this._acceleration * dt;
 		}
 
+		// Updating position based on current velocity
 		public void ApplyVelocity(float dt)
 		{
 			this._position += this._velocity * dt;
@@ -54,7 +60,7 @@ public static class Physics2D
 
 		public void UpdateBasicPhysics(float dt)
 		{
-			this.ApplyForce();
+			this.ApplyConstantForce();
 			this.ApplyAcceleration(dt);
 			this.ApplyVelocity(dt);
 		}
@@ -68,38 +74,22 @@ public static class Physics2D
             float distY = Math.Abs(this._position.Y - rectPos.Y);
 
 			float normX;
-			if (distX > 0.0)
-			{
-				normX = distX / Math.Abs(distX);
-			}
-			else
-			{
-				normX = 0.0f;
-			}
-			float normY;
-			if (distY > 0.0)
-			{
-               normY = distY / Math.Abs(distY);
-            }
-			else
-			{
-				normY = 0.0f;
-			}
+			if (distX > 0.0) normX = distX / Math.Abs(distX);
+			else normX = 0.0f;
 
-			float oldX = this._velocity.X;
-			float oldY = this._velocity.Y;
-			float newX = this._velocity.X * normX;
-			float newY = this._velocity.Y * normY;
+			float normY;
+			if (distY > 0.0) normY = distY / Math.Abs(distY);
+			else normY = 0.0f;
 
             if (distX > ((rect._length / 2.0f) + this._radius)) { return; }
             if (distY > ((rect._height / 2.0f) + this._radius)) { return; }
 
             if (distX <= rect._length / 2.0f) {
-				this._velocity = new Vector2(newX, oldY);
+				this._velocity = new Vector2(this._velocity.X * normX, this._velocity.Y);
 			}
 
             if (distY <= rect._height / 2.0f) {
-				this._velocity = new Vector2(oldX, newY);
+				this._velocity = new Vector2(this._velocity.X, this._velocity.Y * normY);
 			}
 
             double squaredDist = Math.Pow((double)(distX - (rect._length / 2.0f)), 2.0) +
@@ -109,11 +99,11 @@ public static class Physics2D
 			{
 				if (distX < distY)
                 {
-                    this._velocity = new Vector2(newX, oldY);
+                    this._velocity = new Vector2(this._velocity.X * normX, this._velocity.Y);
                 }
 				else
                 {
-                    this._velocity = new Vector2(oldX, newY);
+                    this._velocity = new Vector2(this._velocity.X, this._velocity.Y * normY);
                 }
 			}
         }

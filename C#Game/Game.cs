@@ -87,7 +87,7 @@ public class Game
     public void Update(float dt)
     {
         p1._PS.CollideRect(b1._CR);
-        Console.WriteLine(p1._PS._velocity);
+        Console.WriteLine(p1._PS.IntersectRect(b1._CR));
         p1.Update(dt);
     }
 
