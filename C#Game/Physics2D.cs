@@ -2,6 +2,15 @@
 using System.Security.Authentication.ExtendedProtection;
 using System.Numerics;
 using System.Runtime.InteropServices;
+/*
+ * Stephen Gavin Sears
+ * Professor Aline Normoyle
+ * Game Programming
+ * September 12, 2024
+ * 
+ * Very Awful 2D "physics" engine I wrote that supports dynamic circles 
+ * and rectangles it can collide with
+*/
 
 public static class Physics2D
 {
@@ -11,8 +20,6 @@ public static class Physics2D
 		private float _mass { get; set; }
         public Vector2 _position { get; set; }
         private Vector2 _constantForce { get; set; }
-		private Vector2 _constantAcceleration { get; set; }
-		private Vector2 _tempAcceleration { get; set; }
 		public Vector2 _velocity { get; set; }
 
 		public PhysicsSphere(
@@ -20,8 +27,6 @@ public static class Physics2D
 			float m,
 			Vector2 p,
 			Vector2 f,
-			Vector2 a,
-			Vector2 ta,
 			Vector2 v
 			)
 		{
@@ -29,102 +34,218 @@ public static class Physics2D
 			this._mass = m;
 			this._position = p;
 			this._constantForce = f;
-			this._constantAcceleration = a;
-			this._tempAcceleration = ta;
 			this._velocity = v;
 		}
 
 		// Forces that always act on the object (gravity)
-        public void ApplyConstantForce()
+        public void ApplyConstantForce(float dt)
 		{
-			this._acceleration = this._constantForce / this._mass;
+			this._velocity += (this._constantForce / this._mass) * dt;
 		}
 
-		// Temporary force
+		// Applies 1 second's worth of given force onto sphere
 		public void ApplyForce(Vector2 force)
 		{
-			this._velocity += force / this._mass;
+			this._velocity += (force / this._mass);
 		}
 
-		// Using acceleration to update velocity
-		public void ApplyAcceleration(float dt)
+		// Give us a maximum velocity so we do not phase through walls
+		public void CapVelocity()
 		{
-			this._velocity += this._acceleration * dt;
-		}
+			if (Math.Abs(this._velocity.X) > 65.0)
+            {
+                this._velocity = new Vector2(
+						64.0f * this._velocity.X / Math.Abs(this._velocity.X),
+						this._velocity.Y
+					);
+            }
+			if (Math.Abs(this._velocity.Y) > 200.0)
+			{
+				this._velocity = new Vector2(
+						this._velocity.X, 
+						199.0f * this._velocity.Y / Math.Abs(this._velocity.Y)
+					);
+			}
+        }
 
 		// Updating position based on current velocity
 		public void ApplyVelocity(float dt)
 		{
+			this.CapVelocity();
 			this._position += this._velocity * dt;
 		}
 
+		// Apply constant forces, and apply velocity
 		public void UpdateBasicPhysics(float dt)
 		{
-			this.ApplyConstantForce();
-			this.ApplyAcceleration(dt);
+			this.ApplyConstantForce(dt);
 			this.ApplyVelocity(dt);
 		}
 
-		// Need to figure out direction of normal force
+		// Checks multiple rects for collision updates
+		public void CollideRects(CollisionRect[] rects)
+		{
+			foreach (CollisionRect rect in rects)
+			{
+				this.CollideRect(rect);
+			}
+		}
+
+		// Check for collision from rect and update
+		// velocity accordingly
 		public void CollideRect(CollisionRect rect)
         {
             Vector2 rectPos = rect._position;
 
-            float distX = Math.Abs(this._position.X - rectPos.X);
-            float distY = Math.Abs(this._position.Y - rectPos.Y);
+			// Absolute x and y distances from the rect
+            double distX = Math.Abs(
+					this._position.X - (rectPos.X + (rect._length / 2.0))
+				);
 
-			float normX;
-			if (distX > 0.0) normX = distX / Math.Abs(distX);
-			else normX = 0.0f;
+            double distY = Math.Abs(
+					this._position.Y - (rectPos.Y + (rect._height / 2.0))
+				);
 
-			float normY;
-			if (distY > 0.0) normY = distY / Math.Abs(distY);
-			else normY = 0.0f;
+			// normalized distances (1 or -1 so we can solve later issues)
+            double normX;
+			if (distX > 0.0) 
+				normX = (this._position.X - (rectPos.X + (rect._length / 2.0))) / distX;
+			else normX = 0.0;
+			// Mapped to 0 and 1 for later use
+			double flippedX = ((normX + 1.0) / 2.0);
 
-            if (distX > ((rect._length / 2.0f) + this._radius)) { return; }
-            if (distY > ((rect._height / 2.0f) + this._radius)) { return; }
+			// same as previous block
+            double normY;
+			if (distY > 0.0) 
+				normY = (this._position.Y - (rectPos.Y + (rect._height / 2.0))) / distY;
+			else normY = 0.0;
+			double flippedY = ((normY + 1.0) / 2.0);
 
-            if (distX <= rect._length / 2.0f) {
-				this._velocity = new Vector2(this._velocity.X * normX, this._velocity.Y);
-			}
+			// End code early if ball is too far away
+            if (distX > ((rect._length / 2.0) + (this._radius * 2 * -(flippedX - 1.0)))) { return; }
+            if (distY > ((rect._height / 2.0) + (this._radius * -(flippedY - 2)))) { return; }
 
-            if (distY <= rect._height / 2.0f) {
-				this._velocity = new Vector2(this._velocity.X, this._velocity.Y * normY);
-			}
+			// Checking we are within the x bounds if we want to do a vertical bounce
+			if ((this._position.X <= (rect._position.X + rect._length) - this._radius - 1) 
+				&& (this._position.X >= rect._position.X + 1)
+				)
+            {
+                // flipping vertical velocity and snapping position
+                double sideChange = (flippedY * (rect._height - (this._radius * 2)));
+				this._position = new Vector2(
+						this._position.X, 
+						(float)((rectPos.Y + ((this._radius) * 2 * normY)) + sideChange)
+					);
+				this._velocity = new Vector2(this._velocity.X, -this._velocity.Y);
+				return;
+            }
+			// Checking we are within the y bounds if we want to do a horizontal bounce
+			if ((this._position.Y <= (rect._position.Y + rect._height) - 1)
+                && (this._position.Y >= rect._position.Y + 1)
+                )
+            {
+                // flipping horizontal velocity and snapping position
+                double sideChange = (flippedX * (rect._length - (this._radius * 2)));
+                this._position = new Vector2(
+						(float)((rectPos.X + ((this._radius) * 2 * normX)) + sideChange), 
+						this._position.Y
+					);
+                this._velocity = new Vector2(-this._velocity.X, this._velocity.Y);
+				return;
+            }
 
+
+			// If collision is on corner, we check here
+			// A little glitchy, but it does not seem worth fixing at the moment
             double squaredDist = Math.Pow((double)(distX - (rect._length / 2.0f)), 2.0) +
                 Math.Pow((double)(distY - (rect._height / 2.0f)), 2.0);
 
             if (squaredDist <= (this._radius * this._radius))
 			{
-				if (distX < distY)
+				if (distY - (rect._height / 2.0f) < distX - (rect._length / 2.0f))
                 {
-                    this._velocity = new Vector2(this._velocity.X * normX, this._velocity.Y);
+					// flipping vertical velocity and snapping position
+                    double sideChange = (flippedY * (rect._height - (this._radius * 2)));
+                    this._position = new Vector2(
+                            this._position.X,
+                            (float)((rectPos.Y + ((this._radius) * 2 * normY)) + sideChange)
+                        );
+                    this._velocity = new Vector2(this._velocity.X, -this._velocity.Y);
                 }
 				else
                 {
-                    this._velocity = new Vector2(this._velocity.X, this._velocity.Y * normY);
+                    // flipping horizontal velocity and snapping position
+                    double sideChange = (flippedX * (rect._length - (this._radius * 2)));
+                    this._position = new Vector2(
+                            (float)((rectPos.X + ((this._radius) * 2 * normX)) + sideChange),
+                            this._position.Y
+                        );
+                    this._velocity = new Vector2(-this._velocity.X, this._velocity.Y);
                 }
-			}
+            }
         }
 
+		// Tells me if circle is colliding with rect
+		// (should be tweaked for better accuracy like CollideRect)
 		public bool IntersectRect(CollisionRect rect)
         {
             Vector2 rectPos = rect._position;
 
-			float distX = Math.Abs(this._position.X - rectPos.X);
-			float distY = Math.Abs(this._position.Y - rectPos.Y);
+            // Absolute x and y distances from the rect
+            double distX = Math.Abs(
+                    this._position.X - (rectPos.X + (rect._length / 2.0))
+                );
 
-			if (distX > ((rect._length / 2.0f) + this._radius)) { return false; }
-			if (distY > ((rect._height / 2.0f) + this._radius)) { return false; }
+            double distY = Math.Abs(
+                    this._position.Y - (rectPos.Y + (rect._height / 2.0))
+                );
 
-			if (distX <= rect._length / 2.0f) { return true; }
-			if (distY <= rect._height / 2.0f) { return true; }
+            // normalized distances (1 or -1 so we can solve later issues)
+            double normX;
+            if (distX > 0.0)
+                normX = (this._position.X - (rectPos.X + (rect._length / 2.0))) / distX;
+            else normX = 0.0;
+            // Mapped to 0 and 1 for later use
+            double flippedX = ((normX + 1.0) / 2.0);
 
-			double squaredDist = Math.Pow((double) (distX - (rect._length / 2.0f)), 2.0) + 
-				Math.Pow((double) (distY - (rect._height / 2.0f)), 2.0);
+            // same as previous block
+            double normY;
+            if (distY > 0.0)
+                normY = (this._position.Y - (rectPos.Y + (rect._height / 2.0))) / distY;
+            else normY = 0.0;
+            double flippedY = ((normY + 1.0) / 2.0);
 
-			return (squaredDist <= (this._radius * this._radius));
+            // End code early if ball is too far away
+            if (distX > ((rect._length / 2.0) + (this._radius * 2 * -(flippedX - 1.0)))) { return false; }
+            if (distY > ((rect._height / 2.0) + (this._radius * -(flippedY - 2)))) { return false; }
+
+            // Checking we are within the x bounds if we want to do a vertical bounce
+            if ((this._position.X <= (rect._position.X + rect._length) - this._radius - 1)
+                && (this._position.X >= rect._position.X + 1)
+                )
+            {
+                return true;
+            }
+            // Checking we are within the y bounds if we want to do a horizontal bounce
+            if ((this._position.Y <= (rect._position.Y + rect._height) - 1)
+                && (this._position.Y >= rect._position.Y + 1)
+                )
+            {
+                return true;
+            }
+
+
+            // If collision is on corner, we check here
+            // A little glitchy, but it does not seem worth fixing at the moment
+            double squaredDist = Math.Pow((double)(distX - (rect._length / 2.0f)), 2.0) +
+                Math.Pow((double)(distY - (rect._height / 2.0f)), 2.0);
+
+            if (squaredDist <= (this._radius * this._radius))
+            {
+                return true;
+            }
+
+            return false;
         }
 
 		public void Update(float dt)
@@ -133,6 +254,9 @@ public static class Physics2D
 		}
 	}
 
+	/*
+	 * Simple Collision box
+	 */ 
 	public class CollisionRect
 	{
 		public float _length { get; set; }
