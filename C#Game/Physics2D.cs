@@ -123,11 +123,11 @@ public static class Physics2D
 
 			// End code early if ball is too far away
             if (distX > ((rect._length / 2.0) + (this._radius * 2 * -(flippedX - 1.0)))) { return; }
-            if (distY > ((rect._height / 2.0) + (this._radius * -(flippedY - 2)))) { return; }
+            if (distY > ((rect._height / 2.0) + (this._radius * 2 * -(flippedY - 1.0)))) { return; }
 
 			// Checking we are within the x bounds if we want to do a vertical bounce
-			if ((this._position.X <= (rect._position.X + rect._length) - this._radius - 1) 
-				&& (this._position.X >= rect._position.X + 1)
+			if ((this._position.X <= (rect._position.X + rect._length) - this._radius - 4) 
+				&& (this._position.X >= rect._position.X + 4)
 				)
             {
                 // flipping vertical velocity and snapping position
@@ -140,8 +140,8 @@ public static class Physics2D
 				return;
             }
 			// Checking we are within the y bounds if we want to do a horizontal bounce
-			if ((this._position.Y <= (rect._position.Y + rect._height) - 1)
-                && (this._position.Y >= rect._position.Y + 1)
+			if ((this._position.Y <= (rect._position.Y + rect._height) - 4)
+                && (this._position.Y >= rect._position.Y + 4)
                 )
             {
                 // flipping horizontal velocity and snapping position
@@ -160,7 +160,7 @@ public static class Physics2D
             double squaredDist = Math.Pow((double)(distX - (rect._length / 2.0f)), 2.0) +
                 Math.Pow((double)(distY - (rect._height / 2.0f)), 2.0);
 
-            if (squaredDist <= (this._radius * this._radius))
+            if (squaredDist - (this._radius * this._radius) * 4 <= (this._radius * this._radius))
 			{
 				if (distY - (rect._height / 2.0f) < distX - (rect._length / 2.0f))
                 {

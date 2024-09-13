@@ -211,7 +211,7 @@ public class Game
                 )
             );
         Block end1 = new Block(
-                100,
+                600,
                 750,
                 new Vector2(
                     (Window.width / 2.0f) + 1750, 
@@ -222,7 +222,7 @@ public class Game
                 100,
                 1000,
                 new Vector2(
-                    (Window.width / 2.0f) + 1850, 
+                    (Window.width / 2.0f) + 2350, 
                     Window.height - 1250
                 )
             );
@@ -247,7 +247,7 @@ public class Game
         theGoal = new Block(
                 100,
                 150,
-                new Vector2((Window.width / 2.0f) + 1750, Window.height - 1250)
+                new Vector2((Window.width / 2.0f) + 2250, Window.height - 1250)
             );
     }
 
@@ -388,16 +388,16 @@ public class Game
         {
             p1._PS.ApplyForce(new Vector2(4.0f, 0.0f));
         }
-        else if (key.KeyCode== Keys.S || key.KeyCode == Keys.Down)
-        {
-            p1._PS.ApplyForce(new Vector2(0.0f, 5.0f));
-        }
         else if (key.KeyCode == Keys.A || key.KeyCode == Keys.Left)
         {
             p1._PS.ApplyForce(new Vector2(-4.0f, 0.0f));
         }
         else if (key.KeyCode == Keys.W || key.KeyCode == Keys.Up)
         {
+        }
+        if (key.KeyCode == Keys.S || key.KeyCode == Keys.Down)
+        {
+            p1._PS.ApplyForce(new Vector2(0.0f, 5.0f));
         }
     }
 }
