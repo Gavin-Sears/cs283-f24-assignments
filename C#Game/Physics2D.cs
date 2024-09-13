@@ -52,18 +52,18 @@ public static class Physics2D
 		// Give us a maximum velocity so we do not phase through walls
 		public void CapVelocity()
 		{
-			if (Math.Abs(this._velocity.X) > 65.0)
+			if (Math.Abs(this._velocity.X) > 80.0)
             {
                 this._velocity = new Vector2(
-						64.0f * this._velocity.X / Math.Abs(this._velocity.X),
+						79.0f * this._velocity.X / Math.Abs(this._velocity.X),
 						this._velocity.Y
 					);
             }
-			if (Math.Abs(this._velocity.Y) > 200.0)
+			if (Math.Abs(this._velocity.Y) > 145.0)
 			{
 				this._velocity = new Vector2(
 						this._velocity.X, 
-						199.0f * this._velocity.Y / Math.Abs(this._velocity.Y)
+						144.0f * this._velocity.Y / Math.Abs(this._velocity.Y)
 					);
 			}
         }
