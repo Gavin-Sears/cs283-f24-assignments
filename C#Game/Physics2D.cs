@@ -285,12 +285,12 @@ public static class Physics2D
 			this._bottom = pos.Y + (h / 2.0f);
 
 
-			this._corners = [
+			this._corners = new[] {
 					new Vector2(_left, _top),
 					new Vector2(_right, _top),
 					new Vector2(_left, _bottom),
 					new Vector2(_right, _bottom)
-				];
+			};
 		}
 	}
 

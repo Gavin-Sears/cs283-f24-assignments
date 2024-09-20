@@ -227,7 +227,7 @@ public class Game
 				)
 			);
 
-		blocks = [
+		blocks = new[] {
 			b1,
 			b2,
 			b3,
@@ -242,7 +242,7 @@ public class Game
 			cliffs2,
 			end1,
 			end2
-		];
+		};
 
 		theGoal = new Block(
 				100,
