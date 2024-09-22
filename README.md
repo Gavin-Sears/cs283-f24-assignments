@@ -43,5 +43,5 @@ To play the game, you use the arrow keys and/or wasd. Left and right (a and d) a
 
 ![A03_Demo](https://github.com/user-attachments/assets/a20197e8-edc6-4a48-88af-c0a7c9b0541c)
 
-
+Skybox made by BG Studio: https://assetstore.unity.com/packages/2d/textures-materials/sky/8k-skybox-pack-free-150926
 
