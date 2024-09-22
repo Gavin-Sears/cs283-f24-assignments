@@ -17,6 +17,7 @@ public class CameraControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Cursor.visible = false;
         tr = GetComponent<Transform>();
     }
 
