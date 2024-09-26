@@ -299,7 +299,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 323d87751fe1d4bc9962e179f0cafc42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  POI: []
+  Points: []
+  cooldown: 0.1
+  speed: 1
 --- !u!1 &544877010
 GameObject:
   m_ObjectHideFlags: 0
