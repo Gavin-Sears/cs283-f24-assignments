@@ -31,10 +31,18 @@ public class FlyCamera : MonoBehaviour
 		float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
 
-        yRotation += mouseX * rotateSpeed * Time.deltaTime;
-        xRotation += -Mathf.Clamp(mouseY, -90f, 90) * rotateSpeed * Time.deltaTime;
+        if (Mathf.Abs(mouseX) > 0.001f && Mathf.Abs(mouseY) > 0.001f)
+        {
+            yRotation += mouseX * rotateSpeed * Time.deltaTime;
+            xRotation += -Mathf.Clamp(mouseY, -90f, 90) * rotateSpeed * Time.deltaTime;
 
-        tr.rotation = Quaternion.Euler(new Vector3(xRotation, yRotation, 0.0f));
+            tr.rotation = Quaternion.Euler(new Vector3(xRotation, yRotation, 0.0f));
+        }
+        else
+        {
+            xRotation = tr.eulerAngles.x;
+            yRotation = tr.eulerAngles.y;
+        }
 
         tr.position += 
             speed * 
