@@ -45,3 +45,29 @@ To play the game, you use the arrow keys and/or wasd. Left and right (a and d) a
 
 Skybox made by BG Studio: https://assetstore.unity.com/packages/2d/textures-materials/sky/8k-skybox-pack-free-150926
 
+# Flythrough Tour
+
+<img width="630" alt="loopTour" src="https://github.com/user-attachments/assets/f5207f21-c317-473f-933d-17e11a10aad2">
+
+<img width="630" alt="tourChar" src="https://github.com/user-attachments/assets/5a17c55e-fce5-40c7-bff0-5134fd6a9bfb">
+
+## Birds Eye View
+<img width="630" alt="birdsEye" src="https://github.com/user-attachments/assets/2ee6ce7c-a905-414c-921f-81014c2d228a">
+
+## Camp Site
+<img width="630" alt="campSite" src="https://github.com/user-attachments/assets/3dab64cb-5c9f-4eb9-a2e9-8e0589f3e511">
+
+## Tent Interior
+<img width="630" alt="tentPOI" src="https://github.com/user-attachments/assets/43a00c50-fb5e-4f14-a97e-04a70edab8ca">
+
+## Tall Bush
+<img width="630" alt="bigBush" src="https://github.com/user-attachments/assets/8e185c11-2287-481a-950e-6dc2adad5cde">
+
+## Balanced Rock
+<img width="630" alt="balancedRock" src="https://github.com/user-attachments/assets/b7750ac0-7922-438d-ab61-df124c9690ae">
+
+## Steamy Tree
+<img width="630" alt="tourSteam" src="https://github.com/user-attachments/assets/aa370a6f-b46c-48f5-a334-580f309c43ce">
+
+## Medium-Sized tree
+<img width="630" alt="mediumTree" src="https://github.com/user-attachments/assets/c5d001e6-e471-4121-bac2-9c5ccfd15d01">
