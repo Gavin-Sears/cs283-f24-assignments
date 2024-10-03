@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityStandardAssets.Effects;
 
 public class RigidFollowCamera : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class RigidFollowCamera : MonoBehaviour
     private float hDist = 0.0f;
     [SerializeField]
     private float vDist = 0.0f;
+
+	LayerMask obstacles = LayerMask.GetMask("Obstacle");
 
     private Transform tr;
 
@@ -28,6 +31,19 @@ public class RigidFollowCamera : MonoBehaviour
 
 		// The direction the camera should point is from the target to the camera position
 		Vector3 cameraForward = target.position - eye;
+
+		RaycastHit[] hits;
+		hits = Physics.RaycastAll(eye, -cameraForward.normalized, cameraForward.magnitude, obstacles);
+
+		if (!(hits == null || hits.Length == 0))
+		{
+			foreach (RaycastHit hit in hits)
+			{
+				Debug.Log(hit.transform);
+				var col = hit.transform.gameObject.GetComponent<Renderer>().material.color;
+				col.a = 0.5f;
+			}
+		}
 
 		// Set the camera's position and rotation with the new values
 		// This code assumes that this code runs in a script attached to the camera

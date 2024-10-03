@@ -23,7 +23,6 @@ public class PlayerControls : MonoBehaviour
     {
         tr = GetComponent<Transform>();
 		animator = GetComponent<Animator>();
-		Debug.Log(animator);
 	}
 
 	// Deals with non-vertical movement
@@ -31,7 +30,6 @@ public class PlayerControls : MonoBehaviour
     {
 		// mouse input
 		float inputX = Input.GetAxis("Horizontal");
-		Debug.Log(inputX);
 
 		// apply rotation
 		if (Mathf.Abs(inputX) > 0.0f)
@@ -47,7 +45,6 @@ public class PlayerControls : MonoBehaviour
 
 		// keyboard input
 		float inputZ = Input.GetAxis("Vertical");
-		Debug.Log(inputZ);
 
 		// apply movement
 		if (Mathf.Abs(inputZ) > 0.0f)
@@ -70,10 +67,6 @@ public class PlayerControls : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
-		if (Input.GetKeyDown(KeyCode.W))
-		{
-			Debug.Log("Update is running");
-		}
 		handleMovement();
 	}
 }
