@@ -13,14 +13,18 @@ public class RigidFollowCamera : MonoBehaviour
     [SerializeField]
     private float vDist = 0.0f;
 
-	LayerMask obstacles = LayerMask.GetMask("Obstacle");
+	LayerMask obstacles;
 
     private Transform tr;
+
+	List<Material> buffer;
 
 	// Start is called before the first frame update
 	void Start()
 	{
 		tr = GetComponent<Transform>();
+		obstacles = LayerMask.GetMask("Obstacle");
+		buffer = new List<Material>(); 
 	}
 
 	// Update is called once per frame
@@ -33,7 +37,7 @@ public class RigidFollowCamera : MonoBehaviour
 		Vector3 cameraForward = target.position - eye;
 
 		RaycastHit[] hits;
-		hits = Physics.RaycastAll(eye, -cameraForward.normalized, cameraForward.magnitude, obstacles);
+		hits = Physics.RaycastAll(eye, cameraForward.normalized, cameraForward.magnitude, obstacles);
 
 		if (!(hits == null || hits.Length == 0))
 		{
@@ -41,7 +45,7 @@ public class RigidFollowCamera : MonoBehaviour
 			{
 				Debug.Log(hit.transform);
 				var col = hit.transform.gameObject.GetComponent<Renderer>().material.color;
-				col.a = 0.5f;
+				col.a = 0.0f;
 			}
 		}
 
