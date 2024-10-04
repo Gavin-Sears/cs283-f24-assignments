@@ -1465,6 +1465,7 @@ GameObject:
   - component: {fileID: 522364499}
   - component: {fileID: 522364501}
   - component: {fileID: 522364502}
+  - component: {fileID: 522364503}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1614,7 +1615,6 @@ MonoBehaviour:
   transparencyToggleMat: {fileID: 2100000, guid: df71b7673b9fa4409b672a299c8b6385, type: 2}
   transparentLayers:
   - Obstacle
-  - Default
 --- !u!114 &522364502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1630,8 +1630,23 @@ MonoBehaviour:
   target: {fileID: 530417214}
   hDist: 10
   vDist: 7
-  dampConstant: 5
+  dampConstant: 6
   springConstant: 10
+--- !u!114 &522364503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 522364493}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2b5ab56214745d42be2c12b154c2e32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 530417214}
+  hDist: 10
+  vDist: 7
 --- !u!1 &527148607 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7276280402284358871, guid: 004d067eff310450ca195652fc506489, type: 3}
