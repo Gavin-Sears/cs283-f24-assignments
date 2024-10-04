@@ -1630,7 +1630,7 @@ MonoBehaviour:
   target: {fileID: 530417214}
   hDist: 10
   vDist: 7
-  dampConstant: 2
+  dampConstant: 5
   springConstant: 10
 --- !u!1 &527148607 stripped
 GameObject:

@@ -8,7 +8,10 @@ using UnityEngine;
  * Firday, October 4, 2024
  * 
  * Unity component that causes objects between
- * the player and camera to be rendered transparent
+ * the player and camera to be rendered transparent.
+ * Potential improvement to make:
+ * if original material was the same as another,
+ * use that other object's new transparent material instance.
  * 
  * To use:
  * 
@@ -116,9 +119,14 @@ public class transparencyToggle : MonoBehaviour
                 int index = Array.IndexOf(currentRenderers, r);
                 if (index == -1)
                 {
+                    Material oldMat = r.material;
+
                     // set orignal material to renderer
                     r.material = buffer[r];
                     buffer.Remove(r);
+
+                    // destroy instance so they don't build up
+                    DestroyImmediate(oldMat, true);
                 }
             }
         }
