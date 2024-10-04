@@ -71,3 +71,13 @@ Skybox made by BG Studio: https://assetstore.unity.com/packages/2d/textures-mate
 
 ## Medium-Sized tree
 <img width="630" alt="mediumTree" src="https://github.com/user-attachments/assets/c5d001e6-e471-4121-bac2-9c5ccfd15d01">
+
+# Spring into Action
+
+## Rigid Camera
+
+![rigidCam](https://github.com/user-attachments/assets/bc242a5d-2e89-4a47-b0c3-04778eef1740)
+
+## Spring Camera
+
+![springCam](https://github.com/user-attachments/assets/a038f9f4-c5e3-4e61-95c4-53cde3815e14)
