@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.XR;
 using UnityStandardAssets.Effects;
+using System;
 
 public class RigidFollowCamera : MonoBehaviour
 {
@@ -13,18 +15,83 @@ public class RigidFollowCamera : MonoBehaviour
     [SerializeField]
     private float vDist = 0.0f;
 
+    transparencyToggle tToggle;
+
 	LayerMask obstacles;
 
     private Transform tr;
 
-	List<Material> buffer;
+    [SerializeField]
+    Material baseTransparent;
+
+	// hold original material for object
+	Dictionary<Renderer, Material> buffer;
+
+    // Uses camera locations to make objects transparent based on layerMask
+	void seeThroughWalls(Vector3 eye, Vector3 cameraForward)
+	{
+        RaycastHit[] hits;
+
+        hits = Physics.RaycastAll(eye, cameraForward.normalized, cameraForward.magnitude, obstacles);
+        Renderer[] currentRenderers = new Renderer[hits.Length];
+
+        if (!(hits == null || hits.Length == 0))
+        {
+            for (int i = 0; i < hits.Length; ++i)
+            {
+                Renderer rend = hits[i].transform.gameObject.GetComponent<Renderer>();
+
+                // adding objects we want to stay transparent to array
+                currentRenderers[i] = rend;
+
+                if (!buffer.ContainsKey(rend))
+                {
+                    // uses reference to original material
+                    Material origMat = rend.sharedMaterial;
+                    buffer.Add(rend, origMat);
+
+                    // creates copy of material, sets parameters, and assigns
+                    Material transparent = Instantiate(baseTransparent);
+                    Texture texture = origMat.mainTexture;
+
+                    // set color and texture to same as original
+                    transparent.SetTexture("_BaseMap", texture);
+                    if (origMat.HasProperty("_Color"))
+                    {
+                        // keeps alpha, but changes other colors 
+                        transparent.color = new Color(origMat.color.r, origMat.color.g, origMat.color.g, transparent.color.a);
+                    }
+
+                    rend.material = transparent;
+                }
+            }
+        }
+        if (buffer.Count > 0)
+        {
+            // resets objects and removes entries from buffer
+            foreach (Renderer r in new List<Renderer>(buffer.Keys))
+            {
+                // keep index of renderers we want to keep
+                // allows some objects to return to normal, while others stay transparent
+                int index = Array.IndexOf(currentRenderers, r);
+                if (index == -1)
+                {
+                    // set orignal material to renderer
+                    r.material = buffer[r];
+                    buffer.Remove(r);
+                }
+            }
+        }
+    }
 
 	// Start is called before the first frame update
 	void Start()
-	{
-		tr = GetComponent<Transform>();
+    {
+        Physics.queriesHitBackfaces = true;
+        tr = GetComponent<Transform>();
 		obstacles = LayerMask.GetMask("Obstacle");
-		buffer = new List<Material>(); 
+		buffer = new Dictionary<Renderer, Material>();
+        tToggle = GetComponent<transparencyToggle>();
 	}
 
 	// Update is called once per frame
@@ -36,18 +103,7 @@ public class RigidFollowCamera : MonoBehaviour
 		// The direction the camera should point is from the target to the camera position
 		Vector3 cameraForward = target.position - eye;
 
-		RaycastHit[] hits;
-		hits = Physics.RaycastAll(eye, cameraForward.normalized, cameraForward.magnitude, obstacles);
-
-		if (!(hits == null || hits.Length == 0))
-		{
-			foreach (RaycastHit hit in hits)
-			{
-				Debug.Log(hit.transform);
-				var col = hit.transform.gameObject.GetComponent<Renderer>().material.color;
-				col.a = 0.0f;
-			}
-		}
+        tToggle.seeThroughWalls(eye, cameraForward);
 
 		// Set the camera's position and rotation with the new values
 		// This code assumes that this code runs in a script attached to the camera
