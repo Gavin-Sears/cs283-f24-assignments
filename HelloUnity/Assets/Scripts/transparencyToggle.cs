@@ -26,7 +26,7 @@ using UnityEngine;
  * 
  * void LateUpdate()
  * {
- *      // eye is camera location, cameraForward is 
+ *      // eye is CURRENT camera location, cameraForward is 
  *      // vector going from camera to player
  *      tToggle.seeThroughWalls(eye, cameraForward);
  * }

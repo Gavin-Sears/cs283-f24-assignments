@@ -17,7 +17,9 @@ public class SpringFollowCamera : MonoBehaviour
 	[SerializeField]
 	private float springConstant = 1.0f;
 
-	private Transform tr;
+    transparencyToggle tToggle;
+
+    private Transform tr;
 	private Vector3 velocity = new Vector3(0.0f, 0.0f, 0.0f);
 	private Vector3 actualPosition;
 
@@ -26,6 +28,7 @@ public class SpringFollowCamera : MonoBehaviour
 	{
 		tr = GetComponent<Transform>();
 		actualPosition = tr.position;
+		tToggle = GetComponent<transparencyToggle>();
 	}
 
 	// Update is called once per frame
@@ -49,5 +52,7 @@ public class SpringFollowCamera : MonoBehaviour
 		// This code assumes that this code runs in a script attached to the camera
 		tr.position = actualPosition;
 		tr.rotation = Quaternion.LookRotation(cameraForward);
+
+		tToggle.seeThroughWalls(actualPosition, cameraForward);
 	}
 }
