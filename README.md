@@ -1,4 +1,4 @@
-# Hello Unity!
+# Assignment 01: Hello Unity!
 First assignment for CS283. Intro to C# in Unity, and some basic particle systems.
 
 ### Monkey
@@ -17,7 +17,7 @@ Statue Model made by Rico Cilliers: https://polyhaven.com/a/marble_bust_01
 
 Skybox made by Render Knight: https://assetstore.unity.com/packages/2d/textures-materials/sky/fantasy-skybox-free-18353
 
-# Game in C#
+# Assignment 02: Game in C#
 Coding a game in C# (without Unity)
 ![character](https://github.com/user-attachments/assets/58234e6c-97d5-4e39-9d04-f8ea8b0b17ce)
 
@@ -39,13 +39,13 @@ Now the game should be running on your screen.
 To start the game, double click on "Window.exe," in the C#Game folder from before. You can also compile and run it.
 To play the game, you use the arrow keys and/or wasd. Left and right (a and d) apply a force that will gradually move your character right or left. Pressing down (s), will apply a force downward, which allows you to bounce higher. Get to the green exit and discover what happens!
 
-# Create a Virtual World
+# Assignment 03: Create a Virtual World
 
 ![A03_Demo](https://github.com/user-attachments/assets/a20197e8-edc6-4a48-88af-c0a7c9b0541c)
 
 Skybox made by BG Studio: https://assetstore.unity.com/packages/2d/textures-materials/sky/8k-skybox-pack-free-150926
 
-# Flythrough Tour
+# Assignment 04: Flythrough Tour
 
 <img width="630" alt="loopTour" src="https://github.com/user-attachments/assets/f5207f21-c317-473f-933d-17e11a10aad2">
 
@@ -72,7 +72,7 @@ Skybox made by BG Studio: https://assetstore.unity.com/packages/2d/textures-mate
 ## Medium-Sized tree
 <img width="630" alt="mediumTree" src="https://github.com/user-attachments/assets/c5d001e6-e471-4121-bac2-9c5ccfd15d01">
 
-# Spring into Action
+# Assignment 05: Spring into Action
 
 ## Rigid Camera
 
@@ -81,3 +81,17 @@ Skybox made by BG Studio: https://assetstore.unity.com/packages/2d/textures-mate
 ## Spring Camera
 
 ![springCam](https://github.com/user-attachments/assets/a038f9f4-c5e3-4e61-95c4-53cde3815e14)
+
+# Assignment 06: Bezier, Faster, Stronger
+
+## Linear Path Following
+
+## Cubic Path Following
+
+### Polynomial
+
+### DeCasteljau
+
+## Gaze Controller
+
+## Two-Link Controller
