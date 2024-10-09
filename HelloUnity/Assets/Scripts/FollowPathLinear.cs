@@ -59,7 +59,6 @@ public class FollowPathLinear : MonoBehaviour
 
             // progress within current segment
             float segProgress = u - uWhole;
-            Debug.Log(u);
 
             Transform start;
             Transform end;
