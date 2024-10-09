@@ -1789,7 +1789,7 @@ MonoBehaviour:
   - {fileID: 290752918}
   - {fileID: 1141744242}
   duration: 5
-  DeCasteljau: 0
+  DeCasteljau: 1
   smoothB1: 0
   smoothB2: 0
 --- !u!1 &544877010

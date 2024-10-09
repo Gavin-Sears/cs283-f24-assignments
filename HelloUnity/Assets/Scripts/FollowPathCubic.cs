@@ -74,20 +74,12 @@ public class FollowPathCubic : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space) && !inProgress)
         {
-            if (DeCasteljau)
-            {
-                StartCoroutine(DCJ());
-
-            }
-            else
-            {
-                StartCoroutine(Polynomial());
-            }
+            StartCoroutine(CubicPath());
             inProgress = true;
         }
     }
 
-    IEnumerator Polynomial()
+    IEnumerator CubicPath()
     {
         for (float timer = 0; timer < duration; timer += Time.deltaTime)
         {
@@ -142,14 +134,23 @@ public class FollowPathCubic : MonoBehaviour
             // saving position to calculate lookDirection
             Vector3 lookDir = tr.position;
 
-            // update position and rotation based on segment progress
-            // segProgress = t, start = b0, p1 = b1, p2 = b2, end = b3
-            // p(t) = (1 - t)^3 * b0 + 3t(1 - t)^2 * b1 + 3t^2 * (1 - t)b2 + t^3 * b3
-            tr.position =
-                ((float)Math.Pow((1.0f - segProgress), 3) * start.position) +
-                (3.0f * segProgress * (float)Math.Pow((1.0f - segProgress), 2) * p1.position) +
-                (3 * (float)Math.Pow(segProgress, 2) * (1.0f - segProgress) * p2.position) +
-                ((float)Math.Pow(segProgress, 3) * end.position);
+            if (DeCasteljau)
+            {
+                // recursively applies DeCasteljau, updates using reference to transform
+                DCJ(ref tr, new Transform[] {start, p1, p2, end}, segProgress);
+            }
+            else
+            {
+                // update position and rotation based on segment progress
+                // segProgress = t, start = b0, p1 = b1, p2 = b2, end = b3
+                // p(t) = (1 - t)^3 * b0 + 3t(1 - t)^2 * b1 + 3t^2 * (1 - t)b2 + t^3 * b3
+                tr.position =
+                    ((float)Math.Pow((1.0f - segProgress), 3) * start.position) +
+                    (3.0f * segProgress * (float)Math.Pow((1.0f - segProgress), 2) * p1.position) +
+                    (3 * (float)Math.Pow(segProgress, 2) * (1.0f - segProgress) * p2.position) +
+                    ((float)Math.Pow(segProgress, 3) * end.position);
+            }
+
 
             tr.LookAt(
                 2.0f * tr.position - lookDir,
@@ -164,9 +165,39 @@ public class FollowPathCubic : MonoBehaviour
         yield break;
     }
 
-    // uses DeCasteljau
-    IEnumerator DCJ()
+    // applies DeCasteljau on Transform TR based on
+    // spline defined by points and time t
+    void DCJ(ref Transform TR, Transform[] controls, float t)
     {
-        yield break;
+        Vector3[] points = new Vector3[controls.Length];
+        for (int i = 0; i < controls.Length; ++i)
+            points[i] = controls[i].position;
+
+        TR.position = DeCasteLerp(points, t)[0];
+    }
+
+    // Recursive function linearally interpolating between
+    // n points based on DeCasteljau algorithm.
+    // returns Vector3[] only containing result of
+    // DeCasteljau
+    Vector3[] DeCasteLerp(Vector3[] points, float t)
+    {
+        // base case, if we only have one point left
+        if (points.Length == 1)
+            return points;
+        // in case we get unexpected behavior
+        else if (points.Length < 1)
+        {
+            Debug.Log("Error occured - DeCasteljau resulted in no points");
+            return new Vector3[] { new Vector3(0.0f, 0.0f, 0.0f) };
+        }
+
+        Vector3[] layer = new Vector3[points.Length - 1];
+        for (int i = 0; i < layer.Length; ++i)
+        {
+            layer[i] = Vector3.Lerp(points[i], points[i + 1], t);
+        }
+
+        return DeCasteLerp(layer , t);
     }
 }

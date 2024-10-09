@@ -39,7 +39,6 @@ public class RigidFollowCamera : MonoBehaviour
 
         // Set the camera's position and rotation with the new values
         // This code assumes that this code runs in a script attached to the camera
-        tr.position = eye;
-        tr.rotation = Quaternion.LookRotation(cameraForward);
+        tr.SetPositionAndRotation(eye, Quaternion.LookRotation(cameraForward));
     }
 }
