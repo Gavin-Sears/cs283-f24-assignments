@@ -22,28 +22,34 @@ public class GazeController : MonoBehaviour
         {
             //The formula on the website is totally wrong, this will need to be updated
             Transform tr = followJoints[i];
-            // r
-            Vector3 r = target.position;
-            // e
-            Vector3 e = tr.position;
+            // r - limb we are rotating
+            Vector3 r = tr.position;
+            // e - target of rotation - difference from player
+            Vector3 e = target.position;
 
             Vector3 cross = Vector3.Cross(r, e);
 
             // gonna assume r and e are rotations of transforms
-            // phi = atan2(r x e, (r dot r) + (r dot e))
+            // phi = atan2(||r x e||, (r dot r) + (r dot e))
             float theta = Mathf.Atan2(cross.magnitude, Vector3.Dot(r, r) + Vector3.Dot(r, e));
-            Vector3 axis = cross / cross.magnitude;
+            // noramlize the cross product
+            Vector3 axis = cross.normalized;
 
             // Draw lines with different colors for each tracking transform
+            float ratio = (i + 1) / followJoints.Length;
             Debug.DrawLine(
                 tr.position,
                 target.position,
                 new Color(
-                    1.0f - ((i + 1) / followJoints.Length),
-                    ((i + 1) / followJoints.Length),
-                    1.0f - ((i + 1) / followJoints.Length)));
-            Quaternion rot = findQuaternion(theta, axis);
-            tr.rotation = rot;
+                    1.0f - ratio,
+                    ratio,
+                    1.0f - ratio
+                    )
+                );
+
+            tr.Rotate(axis, theta);
+            //Quaternion rot = findQuaternion(theta, axis);
+            //tr.rotation = rot;
         }
     }
 
