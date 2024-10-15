@@ -86,12 +86,18 @@ Skybox made by BG Studio: https://assetstore.unity.com/packages/2d/textures-mate
 
 ## Linear Path Following
 
+![LinearPath](https://github.com/user-attachments/assets/11093676-d733-47b2-b64a-3990427d9afe)
+
 ## Cubic Path Following
 
-### Polynomial
+![BezierPath](https://github.com/user-attachments/assets/55700f38-f9a1-40d5-a2d0-b65a7d0cc0ed)
 
-### DeCasteljau
+*This example uses DeCasteljau as opposed to polynomial approach
 
 ## Gaze Controller
 
-## Two-Link Controller
+![GazeController](https://github.com/user-attachments/assets/a6eb0ef3-304c-4dc5-95ad-dc9cd8d8e498)
+
+## Two-Link Arm Controller
+
+![TwoLink](https://github.com/user-attachments/assets/e7f2a698-81c9-4b74-af33-3f3eec5db3b3)
