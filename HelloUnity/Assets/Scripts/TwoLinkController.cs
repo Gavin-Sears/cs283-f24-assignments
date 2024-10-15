@@ -45,48 +45,21 @@ public class TwoLinkController : MonoBehaviour
             float term = (Mathf.Pow(r, 2) - Mathf.Pow(l1, 2) - Mathf.Pow(l2, 2)) /
                 (-2 * l1 * l2);
 
-            float theta = Mathf.Acos(term);
+            float theta = Mathf.Acos(-term);
 
-            // hinge uses right axis to rotate
-            middleHinge.localEulerAngles = new Vector3(theta * 180.0f/Mathf.PI,
-                middleHinge.localEulerAngles.y,
-                middleHinge.localEulerAngles.z);
+            Debug.DrawLine(middleHinge.position, (middleHinge.position + (middleHinge.right * 2.0f)), new Color(0.0f, 0.0f, 1.0f));
+            //middleHinge.Rotate(new Vector3(1.0f, 0.0f, 0.0f), theta);
+
+            middleHinge.localRotation = Quaternion.AngleAxis(theta * 180 / Mathf.PI, Vector3.right);
 
             // rotate balljoint based on radius direction to land on end effector
-            GazeController.IKRotate(ref ballJoint, ballJoint.up, target);
+            GazeController.IKRotate(ref ballJoint, (endEffector.position - ballJoint.position), target);
 
             // check against length for debug
-
+            Debug.Log("origin to target");
+            Debug.Log(r);
+            Debug.Log("origin to end effector");
+            Debug.Log((endEffector.position - ballJoint.position).magnitude);
         }
-    }
-
-    public static void TwoLinkRotate(ref Transform tr, Vector3 trForward, Transform target)
-    {
-        // e - target of rotation - difference from player (target - transform)
-        Vector3 e = (target.position - tr.position);
-        // r - limb we are rotating forward vector of transform
-        Vector3 r = trForward;
-
-        Vector3 cross = Vector3.Cross(r, e);
-
-        // target is red
-        Debug.DrawLine(tr.position, target.position, new Color(1.0f, 0.0f, 0.0f));
-        // axis is blue
-        Debug.DrawLine(tr.position, tr.position + cross, new Color(0.0f, 0.0f, 1.0f));
-
-        // phi = atan2(||r x e||, (r dot r) + (r dot e))
-        float theta = Mathf.Atan2(cross.magnitude, Mathf.Abs(Vector3.Dot(r, r) + Vector3.Dot(r, e)));
-        // noramlize the cross product
-        Vector3 axis = cross.normalized;
-
-        tr.Rotate(axis, theta);
-        // in order to fix backwards eye glitch, will need to uses cases like this
-        // (could need to be for whole equation, though!)
-        /*
-        if (Vector3.Dot(r, r) + Vector3.Dot(r, e) > 0.0f)
-            tr.Rotate(axis, theta);
-        else
-            tr.Rotate(axis, theta);
-        */
     }
 }
