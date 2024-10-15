@@ -11,7 +11,7 @@ public class GazeController : MonoBehaviour
     Transform[] followJoints;
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         gazeTracking();
     }
@@ -20,33 +20,44 @@ public class GazeController : MonoBehaviour
     {
         for (int i = 0; i < followJoints.Length; ++i)
         {
-            //The formula on the website is totally wrong, this will need to be updated
             Transform tr = followJoints[i];
-            // e - target of rotation - difference from player (target - transform)
-            Vector3 e = (target.position - tr.position);
-            // r - limb we are rotating forward vector of transform
-            Vector3 r = tr.forward;
-
-            Vector3 cross = Vector3.Cross(r, e);
-
-            // target is red
-            Debug.DrawLine(tr.position, target.position, new Color(1.0f, 0.0f, 0.0f));
-            // axis is blue
-            Debug.DrawLine(tr.position, tr.position + cross, new Color(0.0f, 0.0f, 1.0f));
-
-            // gonna assume r and e are rotations of transforms
-            // phi = atan2(||r x e||, (r dot r) + (r dot e))
-            float theta = Mathf.Atan2(cross.magnitude, Vector3.Dot(r, r) + Vector3.Dot(r, e));
-            // noramlize the cross product
-            Vector3 axis = cross.normalized;
-            Debug.Log(theta);
-            tr.Rotate(axis, theta);
+            IKRotate(ref tr, tr.forward, target);
         }
+    }
+
+    public static void IKRotate(ref Transform tr, Vector3 trForward, Transform target)
+    {
+        // e - target of rotation - difference from player (target - transform)
+        Vector3 e = (target.position - tr.position);
+        // r - limb we are rotating forward vector of transform
+        Vector3 r = trForward;
+
+        Vector3 cross = Vector3.Cross(r, e);
+
+        // target is red
+        Debug.DrawLine(tr.position, target.position, new Color(1.0f, 0.0f, 0.0f));
+        // axis is blue
+        Debug.DrawLine(tr.position, tr.position + cross, new Color(0.0f, 0.0f, 1.0f));
+
+        // phi = atan2(||r x e||, (r dot r) + (r dot e))
+        float theta = Mathf.Atan2(cross.magnitude, Mathf.Abs(Vector3.Dot(r, r) + Vector3.Dot(r, e)));
+        // noramlize the cross product
+        Vector3 axis = cross.normalized;
+
+        tr.Rotate(axis, theta);
+        // in order to fix backwards eye glitch, will need to uses cases like this
+        // (could need to be for whole equation, though!)
+        /*
+        if (Vector3.Dot(r, r) + Vector3.Dot(r, e) > 0.0f)
+            tr.Rotate(axis, theta);
+        else
+            tr.Rotate(axis, theta);
+        */
     }
 
     // finds quaternion from an axis of rotation and a theta value
     // turns out this was not needed, but I'll keep it anyways
-    Quaternion findQuaternion(float theta, Vector3 axis)
+    public static Quaternion findQuaternion(float theta, Vector3 axis)
     {
         float halfAngle = theta / 2.0f;
         float sinHA = Mathf.Sin(halfAngle);
