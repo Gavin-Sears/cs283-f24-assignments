@@ -101,3 +101,11 @@ Skybox made by BG Studio: https://assetstore.unity.com/packages/2d/textures-mate
 ## Two-Link Arm Controller
 
 ![TwoLink](https://github.com/user-attachments/assets/535533b0-578f-4190-b4d1-4efb6cee9a15)
+
+# Assignment 07: Motion and Collision
+
+## Updated Character Controller
+
+![GamePlay](https://github.com/user-attachments/assets/c5f9ab55-0eb8-471e-82ef-8f7caf187c92)
+
+Added collision and jumping. The jump controls implement coyote time as well as variable height based on the duration the jump button has been pressed
