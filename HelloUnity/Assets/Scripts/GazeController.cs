@@ -28,7 +28,7 @@ public class GazeController : MonoBehaviour
     public static void IKRotate(ref Transform tr, Vector3 trForward, Transform target)
     {
         // e - target of rotation - difference from player (target - transform)
-        Vector3 e = (target.position - (tr.position + trForward));
+        Vector3 e = (target.position - tr.position);
         // r - limb we are rotating forward vector of transform
         Vector3 r = trForward;
 
