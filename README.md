@@ -96,8 +96,8 @@ Skybox made by BG Studio: https://assetstore.unity.com/packages/2d/textures-mate
 
 ## Gaze Controller
 
-![GazeController](https://github.com/user-attachments/assets/a6eb0ef3-304c-4dc5-95ad-dc9cd8d8e498)
+![GazeController](https://github.com/user-attachments/assets/fa3d95ab-bce1-4974-8c17-fc00352ab2e3)
 
 ## Two-Link Arm Controller
 
-![TwoLink](https://github.com/user-attachments/assets/e7f2a698-81c9-4b74-af33-3f3eec5db3b3)
+![TwoLink](https://github.com/user-attachments/assets/535533b0-578f-4190-b4d1-4efb6cee9a15)
