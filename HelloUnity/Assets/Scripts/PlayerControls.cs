@@ -21,6 +21,9 @@ public class PlayerControls : MonoBehaviour
 	private PlayerMotionController PMC;
 	private float yRotation = 0.0f;
 
+	// layermask info
+	private LayerMask obstacleMask;
+
 	// jump controls. Note that all values are absolute
 	[Header("Jump Parameters")]
 	[SerializeField]
@@ -33,6 +36,8 @@ public class PlayerControls : MonoBehaviour
 	private float jumpAcceleration;
 	[SerializeField]
 	private float coyoteTime;
+	[SerializeField]
+	private float groundedPadding = 0.0f;
 
 	private float vAcceleration;
 	private bool spacePressed = false;
@@ -50,10 +55,18 @@ public class PlayerControls : MonoBehaviour
 		tr = GetComponent<Transform>();
 		PMC = GetComponent<PlayerMotionController>();
 		controller = GetComponent<CharacterController>();
-	}
+        obstacleMask = LayerMask.GetMask("Obstacle");
+    }
 
-	// Deals with non-vertical movement
-	void handleMovement()
+    // Update is called once per frame
+    void Update()
+    {
+        handleMovement();
+        handleJump();
+    }
+
+    // Deals with non-vertical movement
+    private void handleMovement()
 	{
 		// mouse input
 		float inputX = Input.GetAxis("Horizontal");
@@ -85,7 +98,7 @@ public class PlayerControls : MonoBehaviour
 		}
 	}
 
-	void handleJump()
+	private void handleJump()
 	{
 		// updating variables for coyoteTime
 		updateGroundVars();
@@ -98,7 +111,7 @@ public class PlayerControls : MonoBehaviour
 		if (Input.GetKeyDown("space"))
 		{
 			spacePressed = true;
-            if ((controller.isGrounded || coyoteTime > timeSinceGrounded) && !hasJumped)
+            if ((isGrounded() || coyoteTime > timeSinceGrounded) && !hasJumped)
 			{
 				// we can jump
 				vAcceleration = jumpAcceleration;
@@ -113,7 +126,7 @@ public class PlayerControls : MonoBehaviour
 	}
 
 	// applies non-vertical movement
-	void applyMovement(float z)
+	private void applyMovement(float z)
 	{
 		Vector3 velocity = tr.forward * z * moveSpeed;
 
@@ -124,7 +137,7 @@ public class PlayerControls : MonoBehaviour
 		controller.Move(velocity * Time.deltaTime);
 	}
 
-	void applyVertical()
+	private void applyVertical()
     {
         float testVelocity = vAcceleration * Time.deltaTime;
         // gravity is triple (in this case not 1/3)
@@ -147,21 +160,29 @@ public class PlayerControls : MonoBehaviour
 	}
 
 	// updates variables for coyoteTime
-	void updateGroundVars()
+	private void updateGroundVars()
 	{
-		if (controller.isGrounded)
+		if (isGrounded())
 		{
 			timeGrounded = Time.realtimeSinceStartup;
-			hasJumped = false;
-			vAcceleration = 0.0f;
+			if (!hasJumped)
+				vAcceleration = -0.5f;
+            hasJumped = false;
 		}
 		timeSinceGrounded = Time.realtimeSinceStartup - timeGrounded;
 	}
 
-	// Update is called once per frame
-	void Update()
-    {
-		handleMovement();
-		handleJump();
+	// improving grounded function to not have jump inputs get randomly eaten
+	private bool isGrounded()
+	{
+		// for now will use regular until sticky jumping is solved
+		/*
+		bool rayGrounded = Physics.Raycast(tr.position,
+			Vector3.down, (controller.height / 2.0f) + groundedPadding, obstacleMask);
+		Debug.DrawRay(tr.position, Vector3.down * ((controller.height / 2.0f) + groundedPadding),
+			new Color(1.0f, 0.0f, 0.0f));
+		*/
+
+		return controller.isGrounded;
 	}
 }
