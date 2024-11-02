@@ -109,3 +109,7 @@ Skybox made by BG Studio: https://assetstore.unity.com/packages/2d/textures-mate
 ![GamePlay](https://github.com/user-attachments/assets/c5f9ab55-0eb8-471e-82ef-8f7caf187c92)
 
 Added collision and jumping. The jump controls implement coyote time as well as variable height based on the duration the jump button has been pressed
+
+# Assignment 08: Collection Game
+
+![Collection](https://github.com/user-attachments/assets/fbca97b7-eaaf-46ea-8c63-6015e026e109)
