@@ -82,11 +82,13 @@ public class Spawner : MonoBehaviour
             float rad = Random.Range(0.0f, spawnRange);
             float theta = Random.Range(0.0f, 2.0f * Mathf.PI);
 
-            Vector2 pos = rad * new Vector2(Mathf.Cos(theta), Mathf.Sin(theta));
+            Vector2 pos = (rad * new Vector2(Mathf.Cos(theta), Mathf.Sin(theta)));
 
             // raycast to surface
             RaycastHit hit;
-            Physics.Raycast(new Vector3(pos.x, TR.position.y + spawnRange, pos.y),
+            Physics.Raycast(new Vector3(pos.x + TR.position.x,
+                TR.position.y + spawnRange,
+                pos.y + TR.position.z),
                 Vector3.down, out hit, spawnRange * 2.0f);
 
             finalPosition = hit.point + new Vector3(0.0f, offset, 0.0f);
