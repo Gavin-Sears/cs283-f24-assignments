@@ -20,7 +20,7 @@ public class Spawner : MonoBehaviour
     {
         TR = GetComponent<Transform>();
         // this is for the sphere renderer for visualization
-        TR.localScale = new Vector3 (spawnRange, spawnRange, spawnRange);
+        TR.localScale = new Vector3 (spawnRange, spawnRange, spawnRange) * 2.0f;
 
         collectables = new GameObject[maxSpawnNum];
         template.SetActive(false);
