@@ -166,23 +166,24 @@ public class PlayerControls : MonoBehaviour
 		{
 			timeGrounded = Time.realtimeSinceStartup;
 			if (!hasJumped)
-				vAcceleration = -0.5f;
+				vAcceleration = 0.0f;
             hasJumped = false;
 		}
 		timeSinceGrounded = Time.realtimeSinceStartup - timeGrounded;
 	}
 
-	// improving grounded function to not have jump inputs get randomly eaten
+	// improved grounded function to not have jump inputs get randomly eaten
+	// uses a raycast so that small bounces don't count as not being grounded
+	// alongside old grounded method which gets slope collisions
 	private bool isGrounded()
 	{
-		// for now will use regular until sticky jumping is solved
-		/*
-		bool rayGrounded = Physics.Raycast(tr.position,
+		Bounds bounds = controller.bounds;
+		Vector3 rayOrigin = bounds.center;
+		bool rayGrounded = Physics.Raycast(rayOrigin,
 			Vector3.down, (controller.height / 2.0f) + groundedPadding, obstacleMask);
-		Debug.DrawRay(tr.position, Vector3.down * ((controller.height / 2.0f) + groundedPadding),
-			new Color(1.0f, 0.0f, 0.0f));
-		*/
+		/*Debug.DrawRay(rayOrigin, Vector3.down * ((controller.height / 2.0f) + groundedPadding),
+			new Color(1.0f, 0.0f, 0.0f));*/
 
-		return controller.isGrounded;
+		return rayGrounded || controller.isGrounded;
 	}
 }
