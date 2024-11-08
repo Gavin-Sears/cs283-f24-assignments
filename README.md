@@ -113,3 +113,7 @@ Added collision and jumping. The jump controls implement coyote time as well as 
 # Assignment 08: Collection Game
 
 ![Collection](https://github.com/user-attachments/assets/fbca97b7-eaaf-46ea-8c63-6015e026e109)
+
+# Assignment 09: Wander
+
+![navMeshAgent](https://github.com/user-attachments/assets/0312653c-aa2c-4541-852e-9602727c93e3)
