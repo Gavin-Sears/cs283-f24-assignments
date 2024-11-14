@@ -80,18 +80,19 @@ public class Wander : MonoBehaviour
     // find random point on mesh. Return default point if failure
     public static void RandomPointOnTerrain(Vector3 position, float range, out Vector3 target)
     {
-        // in case random sample fails, take center position.
-        target = position;
-
         // Unity docs example for sampling random point
-        for (int i = 0; i < 30; i++)
+        for (int i = 0; i < 60; ++i)
         {
             Vector3 randomPoint = position + Random.insideUnitSphere * range;
             NavMeshHit hit;
             if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas))
             {
                 target = hit.position;
+                return;
             }
         }
+
+        // in case random sample fails, take center position.
+        target = position;
     }
 }

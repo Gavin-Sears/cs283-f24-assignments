@@ -27,4 +27,9 @@ public class PlayerMotionController : MonoBehaviour
     {
         animator.SetBool("Walking", false);
     }
+
+    public void triggerAttack()
+    {
+        animator.SetTrigger("Attack");
+    }
 }
