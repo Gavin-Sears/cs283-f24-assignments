@@ -92,7 +92,7 @@ Skybox made by BG Studio: https://assetstore.unity.com/packages/2d/textures-mate
 
 ![BezierPath](https://github.com/user-attachments/assets/55700f38-f9a1-40d5-a2d0-b65a7d0cc0ed)
 
-*This example uses DeCasteljau as opposed to polynomial approach
+This example uses DeCasteljau as opposed to polynomial approach
 
 ## Gaze Controller
 
@@ -117,3 +117,23 @@ Added collision and jumping. The jump controls implement coyote time as well as 
 # Assignment 09: Wander
 
 ![navMeshAgent](https://github.com/user-attachments/assets/0312653c-aa2c-4541-852e-9602727c93e3)
+
+# Assignment 10: Behave!
+
+## Minion Behavior
+
+![Minion](https://github.com/user-attachments/assets/bdc96800-18ba-48c6-99dd-b6035eaa4ac2)
+
+Note that the clear barrier that the player walks behind in the second clip is the border of the safe area. When in the safe area, the NPC will flee then start wandering around a designated range until the player exits the safe area.
+
+## Ally Behavior
+
+![Ally](https://github.com/user-attachments/assets/22b614f5-bc6a-4244-a4bc-19b5d0796cc9)
+
+controls: 
+
+z: stay put
+
+x: follow player
+
+c: attack nearest enemy
