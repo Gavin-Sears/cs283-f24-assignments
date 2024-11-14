@@ -7,20 +7,15 @@ using BTAI;
 public class BehaviorMinon : MonoBehaviour
 {
     [Header("NPC")]
-    // amount of time agent pauses before moving again
-    [SerializeField]
-    private float pauseTime = 2.0f;
     [SerializeField]
     private float agentAcceleration = 3.0f;
     [SerializeField]
     private float agentSpeed = 4.0f;
-
     [SerializeField]
-    private float waitTime = 0.0f;
+    private float waitTime = 0.0f; // time stopped while wandering
     private float stoppedTime = 0.0f;
-
     [SerializeField]
-    private float attackRange = 1.0f; // Range within which minion will attack
+    private float attackRange = 3.0f; // Range within which minion will attack
 
     // when above this speed, will do walk anim
     [SerializeField]
@@ -34,6 +29,8 @@ public class BehaviorMinon : MonoBehaviour
     [SerializeField]
     private Transform player; // What minion will attack/follow
 
+    private Transform nearestAlly;
+
 
     private Root m_btRoot = BT.Root();
     private NavMeshAgent agent;
@@ -44,6 +41,8 @@ public class BehaviorMinon : MonoBehaviour
     {
         PMC = GetComponent<PlayerMotionController>();
         agent = GetComponent<NavMeshAgent>();
+
+        nearestAlly = BehaviorUnique.findNearestTag(transform, "Ally");
 
         agent.speed = agentSpeed;
         agent.acceleration = agentAcceleration;
@@ -56,8 +55,8 @@ public class BehaviorMinon : MonoBehaviour
          * - if we don't need to flee, wander in range
          * wander will always be successful
          */
-        BTNode attack = BT.RunCoroutine(AttackPlayer);
-        BTNode follow = BT.RunCoroutine(FollowPlayer);
+        BTNode attack = BT.RunCoroutine(AttackAlly);
+        BTNode follow = BT.RunCoroutine(FollowAlly);
         BTNode flee = BT.RunCoroutine(Flee);
         BTNode moveTo = BT.RunCoroutine(MoveToRandom);
 
@@ -84,10 +83,9 @@ public class BehaviorMinon : MonoBehaviour
         m_btRoot.Tick();
     }
 
-    IEnumerator<BTState> AttackPlayer()
+    IEnumerator<BTState> AttackAlly()
     {
-        Debug.Log(Vector3.Distance(transform.position, player.position));
-        if (Vector3.Distance(transform.position, player.position) < attackRange)
+        if (Vector3.Distance(transform.position, nearestAlly.position) < attackRange)
         {
             // play attack anim
             PMC.triggerAttack();
@@ -97,14 +95,19 @@ public class BehaviorMinon : MonoBehaviour
         yield return BTState.Failure;
     }
 
-    IEnumerator<BTState> FollowPlayer()
+    IEnumerator<BTState> FollowAlly()
     {
-        if (Vector3.Distance(player.position, homeRange.position) >= homeRange.localScale.x)
+        if (Time.frameCount % 5 == 0)
         {
-            // player is not home, so we can follow them
+            nearestAlly = BehaviorUnique.findNearestTag(transform, "Ally");
+        }
+
+        if (Vector3.Distance(nearestAlly.position, homeRange.position) >= homeRange.localScale.x)
+        {
+            // nearest ally character is not home, so we can follow them
             NavMeshHit hit;
             NavMesh.SamplePosition(
-                player.position,
+                nearestAlly.position,
                 out hit, 1.0f,
                 NavMesh.AllAreas);
             agent.SetDestination(hit.position);
@@ -114,7 +117,7 @@ public class BehaviorMinon : MonoBehaviour
         yield return BTState.Failure;
     }
 
-    // assume splayer is not home
+    // assumes player is not home
     IEnumerator<BTState> Flee()
     {
         if (Vector3.Distance(transform.position, wanderRange.position) >= wanderRange.localScale.x)
