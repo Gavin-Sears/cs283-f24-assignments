@@ -140,16 +140,18 @@ public class PlayerControls : MonoBehaviour
 	private void applyVertical()
     {
         float testVelocity = vAcceleration * Time.deltaTime;
+
         // gravity is triple (in this case not 1/3)
         // if falling or not pressing space,
         // creating mario effect
+
         if (testVelocity < 0.000f || !spacePressed)
-		{
-			vAcceleration -= gravity;
+        {
+            vAcceleration -= gravity * Time.deltaTime;
 		}
 		else
 		{
-			vAcceleration -= gravity * 0.33f;
+			vAcceleration -= gravity * 0.33f * Time.deltaTime;
         }
 
 		// calculating and clamping vertical velocity
